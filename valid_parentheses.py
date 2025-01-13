@@ -58,111 +58,80 @@ class Solution:
         ')': 0,
         '}': 0
       }
+      
+      valorMitad = len(s)//2
       signosApertura,signosCierr = ['[','{','('],[']',')','}']
       contador = 0
-      if len(s) % 2 != 0:
-        # print("Ingreso en el primer if")
+      listaSepararSeguidos = []
+      cadenaAuxiliar = ""
+      verificar = False
+      if len(s) % 2 != 0 or len(s) == 0:
         return False
-      elif s[0] not in signosApertura:
-        # print("Ingreso en el primer elif")
+      elif s[0] in signosCierr or s[len(s)-1] not in signosCierr:
         return False
-      elif s[len(s)-1] in signosApertura:
-        # print("Ingreso en el segundo elif")
-        return False
-      else:
-        for indicePrincipal in range(len(s)):
-          diccionarioContador[s[indicePrincipal]] += 1
-          variableAuxiliar = str()
-          contador +=1
-          for indiceExpresion in range(contador,len(s)):
-            variableAuxiliar = diccionarioSignos[s[indicePrincipal]]
-            signosCierr = list(filter(lambda x: True if x != diccionarioSignos[s[indicePrincipal]] else False, signosCierr))
-            # print("-----------------------------------------------------------------------------------------------")
-            # print(f'El signo es: {signo} y deja la lista de signos de cierre de la siguiente manera {signosCierr}')
-            if indicePrincipal == len(s)-1:
-              break
-            elif indiceExpresion == contador and s[indiceExpresion] in signosCierr and s[indicePrincipal] not in signosCierr:
-              # print(contador,indiceExpresion)
-              # print(f"Ingreso en el if con el signo secundario de {s[indiceExpresion]} y el signo del ciclo principal es {signo}")
-              return False
-            elif s[indiceExpresion] == diccionarioSignos[s[indicePrincipal]]:
-              # print("Hola")
-              if variableAuxiliar not in signosApertura:
-                signosCierr.append(variableAuxiliar)
-              # contadorDeSignosConsecutivos += 1
-              break
-            if variableAuxiliar not in signosApertura:
-              signosCierr.append(variableAuxiliar)
+      
+      for signo in s:
+        diccionarioContador[signo] += 1
 
       for clave in diccionarioContador:
         if diccionarioContador[clave] != diccionarioContador[diccionarioSignos[clave]]:
           return False
 
+      loop = True
+      cadenaAuxiliar = s
+      contador = 0
+      contadorVecesWhile = 0
+      while loop:
+        cadena = ""
+        contadorVecesWhile += 1
+        verificar = False
+        for indice in range(len(cadenaAuxiliar)):
+          auxiliar = diccionarioSignos[cadenaAuxiliar[indice]]
+          if cadenaAuxiliar[indice] in signosApertura:
+            signosCierr.remove(diccionarioSignos[cadenaAuxiliar[indice]])
+          if indice == len(cadenaAuxiliar)-1:
+            if cadena == "":
+              break
+            elif len(cadenaAuxiliar) >= 1 and verificar != True:
+              cadena += cadenaAuxiliar[indice]
+              break
+          elif verificar == True:
+            verificar = False
+            continue
+          elif cadenaAuxiliar[indice+1] == diccionarioSignos[cadenaAuxiliar[indice]] and cadenaAuxiliar[indice] in signosApertura:
+            contador += 1
+            listaSepararSeguidos.append((cadenaAuxiliar[indice],cadenaAuxiliar[indice+1]))
+            verificar = True
+          elif (cadenaAuxiliar[indice+1] in signosCierr) and (cadenaAuxiliar[indice] not in signosCierr) and (cadenaAuxiliar[indice] != diccionarioSignos[cadenaAuxiliar[indice+1]]):
+            return False
+          else:
+            cadena += cadenaAuxiliar[indice]
+            verificar = False
+          if auxiliar not in signosApertura:
+            signosCierr.append(auxiliar)
+        cadenaAuxiliar = cadena
 
-      mitadArregloNum = len(s)//2
-      convertirExpresionLista = list(s)
-      # print(signosCierr)
-      listaParaZipCierre = list(filter(lambda x: True if x in signosCierr else False,convertirExpresionLista))
-      listaParaZipApertura = list(filter(lambda x: True if x in signosApertura else False,convertirExpresionLista))
-      listaCombinada = list(zip(listaParaZipApertura,listaParaZipCierre))
-      # print(listaCombinada)
-      for tupla in  listaCombinada:
-        if diccionarioSignos[tupla[0]] == tupla[1]:
-          contadorDeSignosConsecutivos += 1
-
-      if contadorDeSignosConsecutivos == len(listaCombinada):
+        if cadenaAuxiliar == "":
+          loop = False
+        
+      if contador == len(s)//2:
         return True
-      
-      listaComprobanteApertura = []
-      listaComprobanteCierre = []
-      for indiceExpresion in range(len(s)):
-        if indiceExpresion <= mitadArregloNum-1:
-          listaComprobanteApertura.append(s[indiceExpresion])
-        else:
-          listaComprobanteCierre.append(s[indiceExpresion])
-
-      listaComprobanteCierre.reverse()
-      for indiceComprobante in range(len(listaComprobanteApertura)):
-        if listaComprobanteCierre[indiceComprobante] != diccionarioSignos[listaComprobanteApertura[indiceComprobante]]:
-          return False
-      return True
+      else:
+        print("Ultimo else")
+        return False
           
             
 
 solucion = Solution()
 s = "()"
-# print(solucion.isValid(s))
+print(solucion.isValid(s))
 s = "()[]{}"
-# print(solucion.isValid(s))
+print(solucion.isValid(s))
 s = "(]"
 # s = "([)]"
-# print(solucion.isValid(s))
+print(solucion.isValid(s))
 s = "([])"
-# print(solucion.isValid(s))
-
-# s = "[([]])"
-# s = "{([])}"
-# s ="[)(]"
-s = "(([]){})"
 print(solucion.isValid(s))
 
-
-# numeroMitadExpresion = len(s)//2
-# print(numeroMitadExpresion)
-# listaSignoCierre = []
-# listaSignoApertura = []
-# for indice in range(len(s)):
-#   if indice <= numeroMitadExpresion-1:
-#     listaSignoApertura.append(s[indice])
-#   else:
-#     listaSignoCierre.append(s[indice])
-# print(s)
-# print(listaSignoApertura)
-# print(listaSignoCierre)
-# for indicePrincipal in range(0,len(s)):
-#   print(indicePrincipal,s[indicePrincipal])
-#   print("-----------------------------------")
-#   for indiceSegundario in range(len(s)-1,-1,-1):
-#   # print(signo)
-#     print(indiceSegundario,s[indiceSegundario])
-#     # if 
+s = "[()](())"
+print(solucion.isValid(s))
