@@ -18,34 +18,53 @@
 
 class Solution:
     def strStr(self, haystack: str, needle: str) -> int:
+        # print(len(haystack))
         if len(haystack) < len(needle):
             return -1
         indice = 0
         contador = 0
         for indiceCadenaHay in range(len(haystack)):
-            if contador == len(needle):
-                return indice
-            if haystack[indiceCadenaHay] == needle[contador] and contador == 0:
-                print(haystack[indiceCadenaHay])
-                contador += 1
+            if (haystack[indiceCadenaHay] == needle[0]):
+                indiceAuxiliarPrincipal = indiceCadenaHay + 1
                 indice = indiceCadenaHay
-            elif haystack[indiceCadenaHay] == needle[contador]:
-                print(haystack[indiceCadenaHay])
-                contador += 1
-            else:
-                contador = 0
-                indice = 0
-        if contador == len(needle):
-            return indice
-        else:
-            return -1
+                contador +=1
+                # print("Ingreso a un nuevo ciclo secundario------------------")
+                for indiceSubCa in range(1,len(needle)):
+                    # print(indiceAuxiliarPrincipal,indiceSubCa)
+                    if indiceAuxiliarPrincipal >= len(haystack):
+                        break
+                    if needle[indiceSubCa] == haystack[indiceAuxiliarPrincipal]:
+                        contador += 1
+                        indiceAuxiliarPrincipal += 1
+                if len(needle) == contador:
+                    return indice
+                else:
+                    contador = 0
+        
+        return -1
 
 
-# haystack = "a"
-# needle = "a"
-# solucion = Solution()
-# print(solucion.strStr(haystack,needle))
 
+haystack = "a"
+needle = "a"
+solucion = Solution()
+print(solucion.strStr(haystack,needle))
+
+haystack = "sadbutsad"
+needle = "sad"
+solucion = Solution()
+print(solucion.strStr(haystack,needle))
+
+haystack = "leetcode"
+needle = "leeto"
+solucion = Solution()
+print(solucion.strStr(haystack,needle))
+
+
+haystack = "mississippi"
+needle = "issipi"
+solucion = Solution()
+print(solucion.strStr(haystack,needle))
 haystack = "mississippi"
 needle = "issip"
 solucion = Solution()
